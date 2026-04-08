@@ -1,6 +1,6 @@
 # Threat Model – Online Exam/Quiz Platform
 **Course:** CYC386 – Secure Software Design  
-**Member:** [Tumhara Naam]  
+**Member:** amina ,faiza ,eman
 **Date:** April 2026  
 **Methodology:** STRIDE + CVSS v3.1  
 
