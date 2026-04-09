@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify, session, render_template
 
 main_bp = Blueprint('main', __name__)
 
@@ -21,7 +21,8 @@ def home():
             'status': 'Not logged in',
             'quick_start': {
                 'register': 'POST /api/auth/register',
-                'login': 'POST /api/auth/login'
+                'login': 'POST /api/auth/login',
+                'demo': 'GET /demo'
             }
         }), 200
 
@@ -29,3 +30,8 @@ def home():
 def health_check():
     """Health check endpoint"""
     return jsonify({'status': 'healthy', 'message': 'Server is running'}), 200
+
+@main_bp.route('/demo', methods=['GET'])
+def demo():
+    """Security Demo Page"""
+    return render_template('demo.html')
