@@ -1,6 +1,6 @@
 # Member 3 (Development Lead) - Final Report
 
-**Name:** [Your Name]
+**Name:** Faiza Riaz
 **Role:** Development Lead
 **Phases:** 2, 3, 5
 **Date:** April 9, 2026
