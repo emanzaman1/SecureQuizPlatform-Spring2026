@@ -13,16 +13,26 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def set_password(self, password):
-        """Hash and store password securely"""
-        # Using pbkdf2:sha256 (secure and widely used with Werkzeug)
-        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+        """Hash and store password using pbkdf2"""
+        try:
+            self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+            print(f"✅ Password hash created: {self.password_hash[:20]}...")
+        except Exception as e:
+            print(f"❌ Error hashing password: {e}")
+            raise
     
     def check_password(self, password):
-        """Verify password against stored hash"""
-        return check_password_hash(self.password_hash, password)
+        """Verify password against hash"""
+        try:
+            result = check_password_hash(self.password_hash, password)
+            print(f"Password verification result: {result}")
+            return result
+        except Exception as e:
+            print(f"❌ Error checking password: {e}")
+            return False
     
     def has_role(self, role):
-        """Check if user has a specific role"""
+        """Check if user has specific role"""
         return self.role == role
 
 class Quiz(db.Model):
@@ -34,10 +44,9 @@ class Quiz(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships
     creator = db.relationship('User', backref='quizzes')
     questions = db.relationship('Question', backref='quiz', cascade='all, delete-orphan')
-
+    responses = db.relationship('QuizResponse', backref='quiz', cascade='all, delete-orphan')
 
 class Question(db.Model):
     __tablename__ = 'questions'
@@ -45,14 +54,8 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizzes.id'), nullable=False)
     question_text = db.Column(db.Text, nullable=False)
-    question_type = db.Column(db.String(20))  # multiple_choice, short_answer, true_false
-    options = db.Column(db.Text)              # JSON string for multiple choice options
-    correct_answer = db.Column(db.Text)
+    question_type = db.Column(db.String(20), default='multiple_choice')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationship
-    quiz = db.relationship('Quiz', backref='questions')
-
 
 class QuizResponse(db.Model):
     __tablename__ = 'quiz_responses'
@@ -60,9 +63,7 @@ class QuizResponse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizzes.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    score = db.Column(db.Float, nullable=True)
+    score = db.Column(db.Float)
     submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships
-    quiz = db.relationship('Quiz', backref='responses')
     student = db.relationship('User', backref='quiz_responses')
