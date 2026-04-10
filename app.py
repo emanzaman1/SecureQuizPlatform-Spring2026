@@ -1,16 +1,10 @@
-from flask import Flask, request, render_template_string
+from flask import Flask
 
 app = Flask(__name__)
 
-# Homepage
 @app.route("/")
 def home():
-    return "<h1>Welcome to SecureQuizPlatform!</h1>"
-
-# Quiz result page
-@app.route("/result/<int:quiz_id>")
-def result(quiz_id):
-    return f"<h2>Result for Quiz ID: {quiz_id}</h2>"
+    return "Secure Quiz Platform Running Successfully"
 
 if __name__ == "__main__":
     app.run(debug=True)
